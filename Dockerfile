@@ -22,8 +22,6 @@ LABEL maintainer="chariothy" \
   org.opencontainers.image.description="python with gevent" \
   org.opencontainers.image.licenses="MIT"
 
-RUN apk add gcc g++ make libffi-dev openssl-dev
-
 # Install libs
 RUN pip install --no-cache-dir gevent
 # 本地编译时需要加国内代理
