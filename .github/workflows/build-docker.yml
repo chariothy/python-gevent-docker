@@ -6,8 +6,8 @@ name: CI
 # events but only for the master branch
 on:
   push:
-    tags:
-      - v*
+    branches:
+      - master
   pull_request:
     branches: [ master ]
 
@@ -40,11 +40,10 @@ jobs:
     - name: Build the image
       run: |
         docker buildx build --push \
-            --tag chariothy/getmiaoss-docker:latest \
-            --tag chariothy/getmiaoss-docker:${{ steps.vars.outputs.tag }} \
+            --tag chariothy/python-gevent:3.8 \
             --platform linux/386,linux/amd64,linux/arm64,linux/arm/v7 .
 
     - name: Inspect image
       if: always() && github.event_name != 'pull_request'
       run: |
-        docker buildx imagetools inspect chariothy/getmiaoss-docker:latest
+        docker buildx imagetools inspect chariothy/python-gevent:3.8
