@@ -46,8 +46,7 @@ jobs:
             --tag ${{ secrets.DOCKER_USER }}/python-gevent:${{ matrix.python-version }} \
             --tag ${{ secrets.DOCKER_USER }}/python-gevent:${{ matrix.python-version }}-${{ steps.date.outputs.date }} \
             --platform linux/amd64,linux/arm64 \
-            --build-arg PYVER=${{ matrix.python-version }} \
-            -f Dockerfile_${{ matrix.python-version }} .
+            --build-arg PYVER=${{ matrix.python-version }} .
 
     - name: Inspect image
       if: always() && github.event_name != 'pull_request'
