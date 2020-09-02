@@ -45,10 +45,10 @@ jobs:
         docker buildx build --push \
             --tag ${{ secrets.DOCKER_USER }}/python-gevent:${{ matrix.python-version }} \
             --tag ${{ secrets.DOCKER_USER }}/python-gevent:${{ matrix.python-version }}-${{ steps.date.outputs.date }} \
-            --platform linux/386,linux/amd64,linux/arm64,linux/arm/v7 \
+            --platform linux/amd64,linux/arm64 \
             -f Dockerfile_${{ matrix.python-version }} .
 
     - name: Inspect image
       if: always() && github.event_name != 'pull_request'
       run: |
-        docker buildx imagetools inspect ${{ secrets.DOCKER_USER }}/python-gevent:3.8
+        docker buildx imagetools inspect ${{ secrets.DOCKER_USER }}/python-gevent:${{ matrix.python-version }}
