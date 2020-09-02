@@ -15,6 +15,9 @@ on:
 jobs:
   # This workflow contains a single job called "build"
   build:
+    stratege:
+      matrix:
+        python-version: [3.6, 3.7, 3.8]
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -23,8 +26,8 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
     - name: Set output
-      id: vars
-      run: echo ::set-output name=tag::${GITHUB_REF/refs\/tags\//}
+      id: date
+      run: echo "::set-output name=date::$(date +'%Y%m%d')"
 
     # Runs a single command using the runners shell
     - name: Install buildx
@@ -40,10 +43,12 @@ jobs:
     - name: Build the image
       run: |
         docker buildx build --push \
-            --tag chariothy/python-gevent:3.8 \
-            --platform linux/386,linux/amd64,linux/arm64,linux/arm/v7 .
+            --tag ${{ secrets.DOCKER_USER }}/python-gevent:${{ matrix.python-version }} \
+            --tag ${{ secrets.DOCKER_USER }}/python-gevent:${{ matrix.python-version }}-${{ steps.date.outputs.date }} \
+            --platform linux/386,linux/amd64,linux/arm64,linux/arm/v7 \
+            -f /path/to/a/Dockerfile_${{ matrix.python-version }} .
 
     - name: Inspect image
       if: always() && github.event_name != 'pull_request'
       run: |
-        docker buildx imagetools inspect chariothy/python-gevent:3.8
+        docker buildx imagetools inspect ${{ secrets.DOCKER_USER }}/python-gevent:3.8
