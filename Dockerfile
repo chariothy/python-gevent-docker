@@ -1,7 +1,8 @@
 # For Tencent DDNS
 # @version 1.0
 
-FROM python:3.6-slim AS compile-env
+ARG PYVER
+FROM python:${PYVER}-slim AS compile-env
 
 RUN apt-get update \
     && apt-get install -y build-essential libffi-dev python-dev libevent-dev \
@@ -12,7 +13,7 @@ RUN pip install --no-cache-dir --user gevent
 # 本地编译时需要加国内代理
 #RUN pip install -i https://pypi.tuna.tsinghua.edu.cn/simple --no-cache-dir --user -r ./requirements.txt
 
-FROM python:3.6-slim
+FROM python:${PYVER}-slim
 LABEL maintainer="chariothy@gmail.com"
 
 ARG BUILD_DATE
