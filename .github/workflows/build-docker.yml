@@ -39,16 +39,21 @@ jobs:
     - name: Login to docker hub
       run: echo "${{ secrets.DOCKER_PWD }}" | docker login -u "${{ secrets.DOCKER_USER }}" --password-stdin
       
+    - name: Set docker repository name
+      run: |
+        export REP_NAME=python-gevent
+        echo "::set-env name=REP_NAME::$REP_NAME"
+
     # Runs a set of commands using the runners shell
     - name: Build the image
       run: |
         docker buildx build --push \
-            --tag ${{ secrets.DOCKER_USER }}/python-gevent:${{ matrix.python-version }} \
-            --tag ${{ secrets.DOCKER_USER }}/python-gevent:${{ matrix.python-version }}-${{ steps.date.outputs.date }} \
+            --tag ${{ secrets.DOCKER_USER }}/$REP_NAME:${{ matrix.python-version }} \
+            --tag ${{ secrets.DOCKER_USER }}/$REP_NAME:${{ matrix.python-version }}-${{ steps.date.outputs.date }} \
             --platform linux/amd64,linux/arm64 \
             --build-arg PYVER=${{ matrix.python-version }} .
 
     - name: Inspect image
       if: always() && github.event_name != 'pull_request'
       run: |
-        docker buildx imagetools inspect ${{ secrets.DOCKER_USER }}/python-gevent:${{ matrix.python-version }}
+        docker buildx imagetools inspect ${{ secrets.DOCKER_USER }}/$REP_NAME:${{ matrix.python-version }}
