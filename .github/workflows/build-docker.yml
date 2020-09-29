@@ -48,6 +48,7 @@ jobs:
     - name: Build the image
       run: |
         docker buildx build --push \
+            --tag ${{ secrets.DOCKER_USER }}/$REP_NAME:${{ matrix.python-version }} \
             --tag ${{ secrets.DOCKER_USER }}/$REP_NAME:${{ matrix.python-version }}-latest \
             --tag ${{ secrets.DOCKER_USER }}/$REP_NAME:${{ matrix.python-version }}-${{ steps.date.outputs.date }} \
             --platform linux/amd64,linux/arm64 \
