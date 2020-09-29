@@ -26,7 +26,7 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
     - name: Set output
-      id: date
+      id: vars
       run: echo "::set-output name=date::$(date +'%Y%m%d')"
 
     # Runs a single command using the runners shell
@@ -50,6 +50,6 @@ jobs:
         docker buildx build --push \
             --tag ${{ secrets.DOCKER_USER }}/$REP_NAME:${{ matrix.python-version }} \
             --tag ${{ secrets.DOCKER_USER }}/$REP_NAME:${{ matrix.python-version }}-latest \
-            --tag ${{ secrets.DOCKER_USER }}/$REP_NAME:${{ matrix.python-version }}-${{ steps.date.outputs.date }} \
-            --platform linux/amd64,linux/arm64 \
-            --build-arg PYVER=${{ matrix.python-version }} .
+            --tag ${{ secrets.DOCKER_USER }}/$REP_NAME:${{ matrix.python-version }}-${{ steps.vars.outputs.date }} \
+            --build-arg PYVER=${{ matrix.python-version }} \
+            --platform linux/amd64,linux/arm64 .
