@@ -48,12 +48,7 @@ jobs:
     - name: Build the image
       run: |
         docker buildx build --push \
-            --tag ${{ secrets.DOCKER_USER }}/$REP_NAME:${{ matrix.python-version }} \
+            --tag ${{ secrets.DOCKER_USER }}/$REP_NAME:${{ matrix.python-version }}-latest \
             --tag ${{ secrets.DOCKER_USER }}/$REP_NAME:${{ matrix.python-version }}-${{ steps.date.outputs.date }} \
             --platform linux/amd64,linux/arm64 \
             --build-arg PYVER=${{ matrix.python-version }} .
-
-    - name: Inspect image
-      if: always() && github.event_name != 'pull_request'
-      run: |
-        docker buildx imagetools inspect ${{ secrets.DOCKER_USER }}/$REP_NAME:${{ matrix.python-version }}
