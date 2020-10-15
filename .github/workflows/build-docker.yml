@@ -27,7 +27,10 @@ jobs:
     - uses: actions/checkout@v2
     - name: Set output
       id: vars
-      run: echo "::set-output name=date::$(date +'%Y%m%d')"
+      run: |
+        echo ::set-output name=date::$(date +'%Y%m%d')
+        echo ::set-output name=tag::${GITHUB_REF/refs\/tags\//}
+        echo ::set-output name=rep::$(echo $GITHUB_REPOSITORY | sed 's/-docker$//')
 
     # Runs a single command using the runners shell
     - name: Install buildx
@@ -39,17 +42,12 @@ jobs:
     - name: Login to docker hub
       run: echo "${{ secrets.DOCKER_PWD }}" | docker login -u "${{ secrets.DOCKER_USER }}" --password-stdin
       
-    - name: Set docker repository name
-      run: |
-        export REP_NAME=python-gevent
-        echo "::set-env name=REP_NAME::$REP_NAME"
-
     # Runs a set of commands using the runners shell
     - name: Build the image
       run: |
         docker buildx build --push \
-            --tag ${{ secrets.DOCKER_USER }}/$REP_NAME:${{ matrix.python-version }} \
-            --tag ${{ secrets.DOCKER_USER }}/$REP_NAME:${{ matrix.python-version }}-latest \
-            --tag ${{ secrets.DOCKER_USER }}/$REP_NAME:${{ matrix.python-version }}-${{ steps.vars.outputs.date }} \
+            --tag ${{ steps.vars.outputs.rep }}:${{ matrix.python-version }} \
+            --tag ${{ steps.vars.outputs.rep }}:${{ matrix.python-version }}-latest \
+            --tag ${{ steps.vars.outputs.rep }}:${{ matrix.python-version }}-${{ steps.vars.outputs.date }} \
             --build-arg PYVER=${{ matrix.python-version }} \
             --platform linux/amd64,linux/arm64 .
