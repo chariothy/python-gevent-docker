@@ -6,8 +6,8 @@ name: CI
 # events but only for the master branch
 on:
   push:
-    branches:
-      - master
+    tags:
+      - v*
   pull_request:
     branches: [ master ]
 
@@ -48,6 +48,6 @@ jobs:
         docker buildx build --push \
             --tag ${{ steps.vars.outputs.rep }}:${{ matrix.python-version }} \
             --tag ${{ steps.vars.outputs.rep }}:${{ matrix.python-version }}-latest \
-            --tag ${{ steps.vars.outputs.rep }}:${{ matrix.python-version }}-${{ steps.vars.outputs.date }} \
+            --tag ${{ steps.vars.outputs.rep }}:${{ matrix.python-version }}-${{ steps.vars.outputs.tag }} \
             --build-arg PYVER=${{ matrix.python-version }} \
             --platform linux/amd64,linux/arm64 .
