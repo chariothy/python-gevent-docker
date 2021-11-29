@@ -40,7 +40,7 @@ jobs:
         version: latest
     
     - name: Login to docker hub
-      run: echo "${{ secrets.DOCKER_PWD }}" | docker login -u "${{ secrets.DOCKER_USER }}" --password-stdin
+      run: echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USER }}" --password-stdin
       
     # Runs a set of commands using the runners shell
     - name: Build the image
